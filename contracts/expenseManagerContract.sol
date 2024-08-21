@@ -1,3 +1,4 @@
+pragma solidity ^0.8.19;
 // SPDX-License-Identifier: MIT
 
 contract ExpenseManagerContract{
@@ -58,6 +59,9 @@ contract ExpenseManagerContract{
     }
 
     function getAllTransaction()public view returns(address[] memory,uint[] memory,string[] memory,uint[] memory){
+        if (transactions.length == 0) {
+        return (new address[](0), new uint[](0), new string[](0), new uint[](0));
+        }
         address[] memory users= new address[](transactions.length);
         uint[] memory amounts= new uint[](transactions.length);
         string[] memory reasons= new string[](transactions.length);

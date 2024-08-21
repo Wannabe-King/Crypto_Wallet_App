@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:crypto_eth_wallet/models/transaction_model.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +38,12 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       DashboardInitialFechEvent event, Emitter<DashboardState> emit) async {
     emit(DashboardLoadingState());
     try {
-      String rpcUrl = "http://127.0.0.1:7545";
-      String socketUrl = "ws://127.0.0.1:7545";
+      String rpcUrl =
+          Platform.isAndroid ? 'http://10.0.2.2:7545' : "http://127.0.0.1:7545";
+      String socketUrl =
+          Platform.isAndroid ? 'http://10.0.2.2:7545' : "ws://127.0.0.1:7545/";
       String privateKey =
-          "0x5f806fbab7580a21c08303f45ef2327c53d78d7a89a62a850b52f8ba6d9fa454";
+          "0xc843992ed065361aa27026abd83453aba10efb37ce9d405c48e9bedb0c5c6d03";
 
       _web3Client = Web3Client(
         rpcUrl,
@@ -59,7 +62,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           jsonEncode(jsonDecoded["abi"]), 'ExpenseManagerContract');
 
       _contractAddress =
-          EthereumAddress.fromHex("0x1C6C5E0Adcd2d0f40E66d6F6Ec4Ff466b7338dA9");
+          EthereumAddress.fromHex("0x4CC87F97762E3EB52825E132709b37B2A0057Bcd");
 
       _creds = EthPrivateKey.fromHex(privateKey);
 
@@ -68,19 +71,23 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       _deposit = _deployedContract.function("deposit");
       _withdraw = _deployedContract.function("withdraw");
       _getBalance = _deployedContract.function("getBalance");
-
-      _getAllTransactions = _deployedContract.function("getAllTransactions");
-
+      _getAllTransactions = _deployedContract.function("getAllTransaction");
+      // final transactionsData = [];
       final transactionsData = await _web3Client!.call(
           contract: _deployedContract,
           function: _getAllTransactions,
           params: []);
+      // if (transactionsData[0].isEmpty) {
+      //   // Handle empty transactions data
+      //   emit(DashboardSuccessState(transactions: [], balance: balance));
+      //   return;
+      // }
       final balanceData = await _web3Client!
           .call(contract: _deployedContract, function: _getBalance, params: [
-        EthereumAddress.fromHex("0xec58056550Dc3A60C96EeB220D0862Bb6b2988cb")
+        EthereumAddress.fromHex("0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D")
       ]);
-
       List<TransactionModel> trans = [];
+      log('good');
       for (int i = 0; i < transactionsData[0].length; i++) {
         TransactionModel transactionModel = TransactionModel(
             transactionsData[0][i].toString(),
@@ -97,7 +104,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
       emit(DashboardSuccessState(transactions: transactions, balance: balance));
     } catch (e) {
-      log(e.toString());
+      log('Tell ${e.toString()}');
       emit(DashboardErrorState());
     }
   }
@@ -107,7 +114,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     try {
       final transaction = Transaction.callContract(
           from: EthereumAddress.fromHex(
-              "0xec58056550Dc3A60C96EeB220D0862Bb6b2988cb"),
+              "0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D"),
           contract: _deployedContract,
           function: _deposit,
           parameters: [
@@ -130,7 +137,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     try {
       final transaction = Transaction.callContract(
         from: EthereumAddress.fromHex(
-            "0xec58056550Dc3A60C96EeB220D0862Bb6b2988cb"),
+            "0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D"),
         contract: _deployedContract,
         function: _withdraw,
         parameters: [

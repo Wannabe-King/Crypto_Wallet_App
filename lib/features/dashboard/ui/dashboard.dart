@@ -1,6 +1,7 @@
 import 'package:crypto_eth_wallet/features/dashboard/bloc/dashboard_bloc.dart';
 import 'package:crypto_eth_wallet/features/deposit/deposit.dart';
 import 'package:crypto_eth_wallet/features/withdraw/withdraw.dart';
+import 'package:crypto_eth_wallet/utils/assets.dart';
 import 'package:crypto_eth_wallet/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,11 +61,11 @@ class _DashboardPageState extends State<DashboardPage> {
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset(
-                              "assets/eth-logo.svg",
-                              height: 50,
-                              width: 50,
-                            ),
+                            // Image.asset(
+                            //   Assets.logo,
+                            //   height: 50,
+                            //   width: 50,
+                            // ),
                             const SizedBox(width: 12),
                             Text(
                               successState.balance.toString() + ' ETH',
@@ -152,8 +153,9 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               Row(
                                 children: [
-                                  Image.asset("assets/eth-logo.svg",
-                                      height: 24, width: 24),
+                                  // Image.asset(
+                                  //   Assets.logo,
+                                  // ),
                                   const SizedBox(width: 6),
                                   Text(
                                     successState.transactions[index].amount
