@@ -47,7 +47,7 @@ class _DepositPageState extends State<DepositPage> {
               onTap: () {
                 widget.dashboardBloc.add(DashboardDepositEvent(
                     transactionModel: TransactionModel(
-                        addressController.text,
+                        "0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D",
                         int.parse(amountController.text),
                         reasonsController.text,
                         DateTime.now())));

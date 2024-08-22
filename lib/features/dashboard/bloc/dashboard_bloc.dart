@@ -43,7 +43,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       String socketUrl =
           Platform.isAndroid ? 'http://10.0.2.2:7545' : "ws://127.0.0.1:7545/";
       String privateKey =
-          "0xc843992ed065361aa27026abd83453aba10efb37ce9d405c48e9bedb0c5c6d03";
+          "0xe78df48e93fbf011bba6f81e6f44619f95298c7eedd84bfb24fbf209569613c5";
 
       _web3Client = Web3Client(
         rpcUrl,
@@ -87,7 +87,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         EthereumAddress.fromHex("0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D")
       ]);
       List<TransactionModel> trans = [];
-      log('good');
+      log(balanceData.toString());
       for (int i = 0; i < transactionsData[0].length; i++) {
         TransactionModel transactionModel = TransactionModel(
             transactionsData[0][i].toString(),
@@ -113,15 +113,16 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       DashboardDepositEvent event, Emitter<DashboardState> emit) async {
     try {
       final transaction = Transaction.callContract(
-          from: EthereumAddress.fromHex(
-              "0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D"),
-          contract: _deployedContract,
-          function: _deposit,
-          parameters: [
-            BigInt.from(event.transactionModel.amount),
-            event.transactionModel.reason
-          ],
-          value: EtherAmount.inWei(BigInt.from(event.transactionModel.amount)));
+        from: EthereumAddress.fromHex(
+            "0xdcBf0f0be025e0E7af5E93F8bC69c92C59960c8D"),
+        contract: _deployedContract,
+        function: _deposit,
+        parameters: [
+          BigInt.from(event.transactionModel.amount),
+          event.transactionModel.reason
+        ],
+        value: EtherAmount.inWei(BigInt.from(event.transactionModel.amount)),
+      );
 
       final result = await _web3Client!.sendTransaction(_creds, transaction,
           chainId: 1337, fetchChainIdFromNetworkId: false);
